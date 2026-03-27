@@ -145,3 +145,26 @@ def test_set_correct_choices_with_empty_list():
 
     assert not choice1.is_correct
     assert not choice2.is_correct
+
+@pytest.fixture
+def question_with_choices():
+    question = Question(title='q1', max_selections=2)
+    choice1 = question.add_choice('a', False)
+    choice2 = question.add_choice('b', True)
+    choice3 = question.add_choice('c', False)
+    return question, choice1, choice2, choice3
+
+def test_correct_selected_choices(question_with_choices):
+    question, choice1, choice2, choice3 = question_with_choices
+
+    selected_choice_ids = [choice1.id, choice2.id]
+    correct_choice_ids = question.correct_selected_choices(selected_choice_ids)
+
+    assert correct_choice_ids == [choice2.id]
+
+def test_correct_selected_choices_with_invalid_id(question_with_choices):
+    question, choice1, choice2, choice3 = question_with_choices
+
+    selected_choice_ids = ['invalid_id']
+    
+    assert question.correct_selected_choices(selected_choice_ids) == []
